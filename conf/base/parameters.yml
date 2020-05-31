@@ -1,0 +1,13 @@
+
+# Parameters for the example pipeline. Feel free to delete these once you
+# remove the example pipeline from pipeline.py and the example nodes in
+# `src/pipelines/`
+example_test_data_ratio: 0.2
+example_num_train_iter: 10000
+example_learning_rate: 0.01
+
+hktv_mall_page_size: "1000"
+hktvmall_home_url: 'https://www.hktvmall.com/hktv/zh/supermarket'
+hktvmall_discount_url: "https://www.hktvmall.com/hktv/zh/ajax/search_products?query=%22%22%3A%3Acategory%3ABB01000048761%3AcategoryHotPickOrder%3ABB01000048761%3Azone%3Asupermarket%3Astreet%3Amain%3A&currentPage=0&pageSize={}&pageType=searchResult&categoryCode=BB01000048761"
+hktvmall_top100_url: 'https://www.hktvmall.com/hktv/zh/ajax/getTop100?code=supermarket&pageSize={}&currentPage=0'
+hktvmall_product_comment_url: "https://www.hktvmall.com/hktv/zh/ajax/get_pdp_product_reviews?productCode={}&currentPage=1&reviewType=all&pageSize={}"
