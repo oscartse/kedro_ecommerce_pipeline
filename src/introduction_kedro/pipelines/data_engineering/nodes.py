@@ -1,43 +1,54 @@
-# Copyright 2020 QuantumBlack Visual Analytics Limited
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
-# NONINFRINGEMENT. IN NO EVENT WILL THE LICENSOR OR OTHER CONTRIBUTORS
-# BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN
-# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF, OR IN
-# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#
-# The QuantumBlack Visual Analytics Limited ("QuantumBlack") name and logo
-# (either separately or in combination, "QuantumBlack Trademarks") are
-# trademarks of QuantumBlack. The License does not grant you any right or
-# license to the QuantumBlack Trademarks. You may not use the QuantumBlack
-# Trademarks or any confusingly similar mark as a trademark for your product,
-# or use the QuantumBlack Trademarks in any other manner that might cause
-# confusion in the marketplace, including but not limited to in advertising,
-# on websites, or on software.
-#
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""Example code for the nodes in the example pipeline. This code is meant
-just for illustrating basic Kedro features.
-
-PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
-"""
-
 from typing import Any, Dict
-
 import pandas as pd
-
 import requests
-
+import random
 from kedro.extras.datasets.pandas import CSVDataSet
+
+LUMINATI_PASS = "hja29x3mhtyy"
+LUMINATI_USER = "lum-customer-klook-zone-shared_data_center"
+LUMINATI_HOST = "zproxy.lum-superproxy.io"
+LUMINATI_PORT = 22225
+user_agent_list = [
+    # Chrome
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 5.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+    # Firefox
+    'Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1)',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+    'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (Windows NT 6.2; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0)',
+    'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
+    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)',
+    'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)'
+]
+
+
+def get_proxy_credentials():
+    proxy = "{}:{}@{}:{}".format(LUMINATI_USER, LUMINATI_PASS, LUMINATI_HOST, LUMINATI_PORT)
+    # lum-customer-klook-zone-shared_data_center:hja29x3mhtyy@zproxy.lum-superproxy.io:22225
+    return proxy
+
+
+def proxy_server():
+    proxies = {
+        "http": get_proxy_credentials(),
+        "https": get_proxy_credentials()
+    }
+    return proxies
 
 
 def hktvmall_conn_node(link: str) -> dict:
@@ -45,25 +56,91 @@ def hktvmall_conn_node(link: str) -> dict:
     cook = []
     for c in r.cookies:
         cook.append("{}".format(c.name) + "=" + "{}".format(c.value))
+    user_agent = random.choice(user_agent_list)
     headers = {
-        'Cookie': "; ".join(cook)
+        'Cookie': "; ".join(cook),
+        'User-Agent': user_agent,
     }
     return headers
 
 
-def request_hktvmall_product_raw(headers: dict, link: str, page_size: str) -> pd.DataFrame:
-    url = str(link).format(page_size)
-    product_raw = requests.request("GET", url, headers=headers).json()['products']
+def request_hktvmall_catagory_code(headers: dict, category_directory_url: str) \
+        -> pd.DataFrame:
+    from lxml import html
+    from datetime import datetime
+    import time
 
-    assert all(len(i.keys()) for i in product_raw), \
-        "HKTV Mall raw data each products' dictionary key not the same"
+    category_directory_html = requests.get(category_directory_url).content
+    tree = html.fromstring(category_directory_html)
+    category_list = tree.xpath('//div[@class="directory-navbar"]/ul/a/li/@data-zone')
+    all_categories = []
 
-    df = pd.DataFrame(product_raw)
-    # data_set = CSVDataSet(filepath="data/01_raw")
-    # data_set.save(df)
-    # reloaded = data_set.load()
+    # category raw dta
+    for i in category_list:
+        get_categories_url = "https://www.hktvmall.com/hktv/zh/ajax/getCategories?categoryCode={}".format(i)
+        catalog_raw = requests.request("GET", get_categories_url, headers=headers).json()['categories']
+        all_categories.append(catalog_raw)
 
-    return df
+    # get needed from category raw data
+    tmp = []
+    for directory in all_categories:
+        for category in directory:
+            try:
+                for subcat in category['subCats']:
+                    tmp.append(
+                        {
+                            "CategoryCode": category['categoryCode'],
+                            "CategoryName": category['name'],
+                            "SubcategoryCode": subcat['categoryCode'],
+                            "SubcategoryName": subcat['name'],
+                            "Count": str(subcat['count'])
+                        }
+                    )
+            except TypeError:
+                tmp.append(
+                    {
+                        "CategoryCode": category['categoryCode'],
+                        "CategoryName": category['name'],
+                        "SubcategoryCode": None,
+                        "SubcategoryName": None,
+                        "Count": str(category['count'])
+                    }
+                )
+    catalog = pd.DataFrame(tmp)
+    catalog['scrap_date'] = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')
+
+    return catalog
+
+
+def request_hktvmall_product_raw(headers: dict, links: list, page_size: str) \
+        -> CSVDataSet:
+    proxies = proxy_server()
+    total_df = []
+    for link in links:
+        url = link.format(page_size)
+        product_raw = requests.request("GET", url, headers=headers, proxies=proxies).json()['products']
+        try:
+            assert all(len(i.keys()) for i in product_raw), "HKTV Mall raw data each products' dictionary key not the same"
+            total_df.append(pd.DataFrame(product_raw))
+        except AssertionError:
+            pass
+
+    data = pd.concat(total_df, ignore_index=True, sort=False)
+    data_set = CSVDataSet(filepath="data/01_raw/hktvmall_exist_in_all_df.csv")
+    data_set.save(data)
+    reloaded = data_set.load()
+
+    return reloaded
+
+
+def gen_hktvmall_product_link(categories: dict, methods: dict, url: str) -> list:
+    all_links = []
+    for method in methods.values():
+        for code in categories.values():
+            thislink = url.format(code, method, code, code) + "&pageSize={}"
+            all_links.append(thislink)
+
+    return all_links
 
 
 def concat_data_sets(df_discounted: pd.DataFrame, df_top100: pd.DataFrame) -> pd.DataFrame:

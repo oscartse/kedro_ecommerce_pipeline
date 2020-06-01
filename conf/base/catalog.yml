@@ -51,14 +51,6 @@ iris_scatter_plot:
   type: kedro.extras.datasets.matplotlib.MatplotlibWriter
   filepath: data/iris.png
 
-hktvmall_discounted_raw:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/hktvmall_discounted_raw.csv
-
-hktvmall_top100_raw:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/hktvmall_top100_raw.csv
-
 hktvmall_exist_in_all_df:
   type: pandas.CSVDataSet
   filepath: data/01_raw/hktvmall_exist_in_all_df.csv
