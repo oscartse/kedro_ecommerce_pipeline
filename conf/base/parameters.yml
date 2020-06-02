@@ -12,6 +12,7 @@ hktvmall_hotpicks_url: "https://www.hktvmall.com/hktv/zh/ajax/search_products?qu
 hktvmall_top100_url: 'https://www.hktvmall.com/hktv/zh/ajax/getTop100?code=supermarket&pageSize={}&currentPage=0'
 hktvmall_product_comment_url: "https://www.hktvmall.com/hktv/zh/ajax/get_pdp_product_reviews?productCode={}&currentPage=1&reviewType=all&pageSize={}"
 hktvmall_category_diction_url: 'https://www.hktvmall.com/hktv/zh/main/category-directory'
+
 hktvmall_catagory_code:
   babyproducts: BB01000026191
   beautynhealth: BB09000008021
@@ -24,6 +25,7 @@ hktvmall_catagory_code:
   sportsntrip: BB03000021011
   switchgames: BB15000002161
   toysnbooks: BB10000003161
+
 hktvmall_browse_method:
   discount: PromotionDifference
   hotpicks: HotPickOrder

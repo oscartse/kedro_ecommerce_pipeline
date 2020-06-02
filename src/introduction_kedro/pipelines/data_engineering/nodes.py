@@ -65,7 +65,7 @@ def hktvmall_conn_node(link: str) -> dict:
 
 
 def request_hktvmall_catagory_code(headers: dict, category_directory_url: str) \
-        -> pd.DataFrame:
+        -> CSVDataSet:
     from lxml import html
     from datetime import datetime
     import time
@@ -108,8 +108,10 @@ def request_hktvmall_catagory_code(headers: dict, category_directory_url: str) \
                 )
     catalog = pd.DataFrame(tmp)
     catalog['scrap_date'] = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')
-
-    return catalog
+    data_set = CSVDataSet(filepath="data/01_raw/hktv_mall_category.csv")
+    data_set.save(catalog)
+    reloaded = data_set.load()
+    return reloaded
 
 
 def request_hktvmall_product_raw(headers: dict, links: list, page_size: str) \

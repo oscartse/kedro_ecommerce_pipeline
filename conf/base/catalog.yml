@@ -54,3 +54,7 @@ iris_scatter_plot:
 hktvmall_exist_in_all_df:
   type: pandas.CSVDataSet
   filepath: data/01_raw/hktvmall_exist_in_all_df.csv
+
+hktv_mall_category:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/hktv_mall_category.csv
