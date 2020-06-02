@@ -43,17 +43,21 @@
 # This is a data set used by the "Hello World" example pipeline provided with the project
 # template. Please feel free to remove it once you remove the example pipeline.
 
-example_iris_data:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/iris.csv
+#example_iris_data:
+#  type: pandas.CSVDataSet
+#  filepath: data/01_raw/iris.csv
+#
+#iris_scatter_plot:
+#  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
+#  filepath: data/iris.png
 
-iris_scatter_plot:
-  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
-  filepath: data/iris.png
-
-hktvmall_exist_in_all_df:
+PromotionDifference_raw:
   type: pandas.CSVDataSet
-  filepath: data/01_raw/hktvmall_exist_in_all_df.csv
+  filepath: data/02_intermediate/PromotionDifference_raw.csv
+
+HotPickOrder_raw:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/HotPickOrder_raw.csv
 
 hktv_mall_category:
   type: pandas.CSVDataSet

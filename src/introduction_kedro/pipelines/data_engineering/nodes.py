@@ -114,8 +114,16 @@ def request_hktvmall_catagory_code(headers: dict, category_directory_url: str) \
     return reloaded
 
 
+def gen_hktvmall_product_link(categories: dict, methods: dict, url: str) -> Dict[str, Any]:
+    method1_list, method2list = [], []
+    for code in categories.values():
+        method1_list.append(str(url.format(code, list(methods.values())[0], code, code) + "&pageSize={}"))
+        method2list.append(str(url.format(code, list(methods.values())[1], code, code) + "&pageSize={}"))
+    return dict(method1=method1_list, method2=method2list)
+
+
 def request_hktvmall_product_raw(headers: dict, links: list, page_size: str) \
-        -> CSVDataSet:
+        -> pd.DataFrame:
     proxies = proxy_server()
     total_df = []
     for link in links:
@@ -126,23 +134,25 @@ def request_hktvmall_product_raw(headers: dict, links: list, page_size: str) \
             total_df.append(pd.DataFrame(product_raw))
         except AssertionError:
             pass
-
     data = pd.concat(total_df, ignore_index=True, sort=False)
-    data_set = CSVDataSet(filepath="data/01_raw/hktvmall_exist_in_all_df.csv")
-    data_set.save(data)
+
+    return data
+
+
+def promotion_difference_raw_to_kedro_csvdataset(df: pd.DataFrame) -> CSVDataSet:
+    data_set = CSVDataSet(filepath="data/02_intermediate/PromotionDifference_raw.csv")
+    data_set.save(df)
     reloaded = data_set.load()
 
     return reloaded
 
 
-def gen_hktvmall_product_link(categories: dict, methods: dict, url: str) -> list:
-    all_links = []
-    for method in methods.values():
-        for code in categories.values():
-            thislink = url.format(code, method, code, code) + "&pageSize={}"
-            all_links.append(thislink)
+def hot_pick_order_raw_to_kedro_csvdataset(df: pd.DataFrame) -> CSVDataSet:
+    data_set = CSVDataSet(filepath="data/02_intermediate/HotPickOrder_raw.csv")
+    data_set.save(df)
+    reloaded = data_set.load()
 
-    return all_links
+    return reloaded
 
 
 def concat_data_sets(df_discounted: pd.DataFrame, df_top100: pd.DataFrame) -> pd.DataFrame:
