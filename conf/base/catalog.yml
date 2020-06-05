@@ -1,8 +1,8 @@
 # Here you can define all your data sets by using simple YAML syntax.
 #
-# Documentation for this file format can be found in "The Data Catalog"
+# Documentation for this file format can be found in 'The Data Catalog'
 # Link: https://kedro.readthedocs.io/en/stable/04_user_guide/04_data_catalog.html
-
+#
 #
 # We support interacting with a variety of data stores including local file systems, cloud, network and HDFS
 #
@@ -10,7 +10,7 @@
 #
 #bikes:
 #  type: pandas.CSVDataSet
-#  filepath: "data/01_raw/bikes.csv"
+#  filepath: 'data/01_raw/bikes.csv'
 #
 #weather:
 #  type: spark.SparkDataSet
@@ -40,9 +40,9 @@
 # (transcoding), templating and a way to reuse arguments that are frequently repeated. See more here:
 # https://kedro.readthedocs.io/en/stable/04_user_guide/04_data_catalog.html
 #
-# This is a data set used by the "Hello World" example pipeline provided with the project
+# This is a data set used by the 'Hello World' example pipeline provided with the project
 # template. Please feel free to remove it once you remove the example pipeline.
-
+#
 #example_iris_data:
 #  type: pandas.CSVDataSet
 #  filepath: data/01_raw/iris.csv
@@ -54,11 +54,14 @@
 PromotionDifference_raw:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/PromotionDifference_raw.csv
+  layer: Raw
 
 HotPickOrder_raw:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/HotPickOrder_raw.csv
+  layer: Raw
 
 hktv_mall_category:
   type: pandas.CSVDataSet
   filepath: data/01_raw/hktv_mall_category.csv
+  layer: Intermediate

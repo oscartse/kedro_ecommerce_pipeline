@@ -31,7 +31,7 @@ def create_pipeline(**kwargs):
     # get PromotionDifference_raw_df
     pipe.append(node(
         request_hktvmall_product_raw,
-        inputs=["hktvmall_header", "PromotionDifferenceURL_list", "params:hktv_mall_page_size"],
+        inputs=["hktvmall_header", "PromotionDifferenceURL_list", "params:hktv_mall_page_size_list"],
         outputs="PromotionDifference_raw_df"
         )
     )
@@ -45,7 +45,7 @@ def create_pipeline(**kwargs):
     # get HotPickOrder_raw_df
     pipe.append(node(
         request_hktvmall_product_raw,
-        inputs=["hktvmall_header", "HotPickOrderURL_list", "params:hktv_mall_page_size"],
+        inputs=["hktvmall_header", "HotPickOrderURL_list", "params:hktv_mall_page_size_list"],
         outputs="HotPickOrder_raw_df"
         )
     )

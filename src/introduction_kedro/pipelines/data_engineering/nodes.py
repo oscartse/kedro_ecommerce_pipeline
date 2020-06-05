@@ -3,11 +3,8 @@ import pandas as pd
 import requests
 import random
 from kedro.extras.datasets.pandas import CSVDataSet
+import yaml
 
-LUMINATI_PASS = "hja29x3mhtyy"
-LUMINATI_USER = "lum-customer-klook-zone-shared_data_center"
-LUMINATI_HOST = "zproxy.lum-superproxy.io"
-LUMINATI_PORT = 22225
 user_agent_list = [
     # Chrome
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
@@ -38,8 +35,13 @@ user_agent_list = [
 
 
 def get_proxy_credentials():
+    with open(r'conf/base/credentials.yml') as file:
+        credentials = yaml.full_load(file)
+        LUMINATI_PASS = credentials['luminati_cred']['LUMINATI_PASS']
+        LUMINATI_USER = credentials['luminati_cred']['LUMINATI_USER']
+        LUMINATI_HOST = credentials['luminati_cred']['LUMINATI_HOST']
+        LUMINATI_PORT = credentials['luminati_cred']['LUMINATI_PORT']
     proxy = "{}:{}@{}:{}".format(LUMINATI_USER, LUMINATI_PASS, LUMINATI_HOST, LUMINATI_PORT)
-    # lum-customer-klook-zone-shared_data_center:hja29x3mhtyy@zproxy.lum-superproxy.io:22225
     return proxy
 
 
@@ -65,7 +67,7 @@ def hktvmall_conn_node(link: str) -> dict:
 
 
 def request_hktvmall_catagory_code(headers: dict, category_directory_url: str) \
-        -> CSVDataSet:
+        -> pd.DataFrame:
     from lxml import html
     from datetime import datetime
     import time
@@ -73,45 +75,31 @@ def request_hktvmall_catagory_code(headers: dict, category_directory_url: str) \
     category_directory_html = requests.get(category_directory_url).content
     tree = html.fromstring(category_directory_html)
     category_list = tree.xpath('//div[@class="directory-navbar"]/ul/a/li/@data-zone')
+
     all_categories = []
-
-    # category raw dta
     for i in category_list:
-        get_categories_url = "https://www.hktvmall.com/hktv/zh/ajax/getCategories?categoryCode={}".format(i)
-        catalog_raw = requests.request("GET", get_categories_url, headers=headers).json()['categories']
-        all_categories.append(catalog_raw)
+        get_categories_url = "https://www.hktvmall.com/hktv/en/ajax/getCategories?categoryCode={}".format(i)
+        catalog_raw = requests.request("GET", get_categories_url, headers=headers).json()
+        catalog_df = pd.DataFrame(catalog_raw['categories'])
+        catalog_df['tagname'] = catalog_raw['tagname']
+        all_categories.append(catalog_df)
 
-    # get needed from category raw data
-    tmp = []
-    for directory in all_categories:
-        for category in directory:
-            try:
-                for subcat in category['subCats']:
-                    tmp.append(
-                        {
-                            "CategoryCode": category['categoryCode'],
-                            "CategoryName": category['name'],
-                            "SubcategoryCode": subcat['categoryCode'],
-                            "SubcategoryName": subcat['name'],
-                            "Count": str(subcat['count'])
-                        }
-                    )
-            except TypeError:
-                tmp.append(
-                    {
-                        "CategoryCode": category['categoryCode'],
-                        "CategoryName": category['name'],
-                        "SubcategoryCode": None,
-                        "SubcategoryName": None,
-                        "Count": str(category['count'])
-                    }
-                )
-    catalog = pd.DataFrame(tmp)
-    catalog['scrap_date'] = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')
-    data_set = CSVDataSet(filepath="data/01_raw/hktv_mall_category.csv")
-    data_set.save(catalog)
-    reloaded = data_set.load()
-    return reloaded
+    # catalog['scrap_date'] = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d')
+    # data_set = CSVDataSet(filepath="data/01_raw/hktv_mall_category.csv")
+    # data_set.save(catalog)
+    # reloaded = data_set.load()
+    return pd.concat(all_categories, ignore_index=True, sort=False)
+
+
+def request_full_site(headers: dict, catalog_df: pd.DataFrame, url: str, page_size_list: list) -> pd.DataFrame:
+    for catalog in catalog_df.iterrows():
+        proxies = proxy_server()
+        rand_page_size = random.choice(page_size_list)
+        Cat_url = url.format(catalog, str(rand_page_size), catalog)+"&currentPage={}"
+        for i in range(0, int(catalog['Count'])//rand_page_size+1):
+            subCat_raw = requests.request("GET", Cat_url.format(i), headers=headers, proxies=proxies).json()['products']
+
+    pass
 
 
 def gen_hktvmall_product_link(categories: dict, methods: dict, url: str) -> Dict[str, Any]:
@@ -119,15 +107,16 @@ def gen_hktvmall_product_link(categories: dict, methods: dict, url: str) -> Dict
     for code in categories.values():
         method1_list.append(str(url.format(code, list(methods.values())[0], code, code) + "&pageSize={}"))
         method2list.append(str(url.format(code, list(methods.values())[1], code, code) + "&pageSize={}"))
+
     return dict(method1=method1_list, method2=method2list)
 
 
-def request_hktvmall_product_raw(headers: dict, links: list, page_size: str) \
+def request_hktvmall_product_raw(headers: dict, links: list, page_size_list: list) \
         -> pd.DataFrame:
     proxies = proxy_server()
     total_df = []
     for link in links:
-        url = link.format(page_size)
+        url = link.format(random.choice(page_size_list))
         product_raw = requests.request("GET", url, headers=headers, proxies=proxies).json()['products']
         try:
             assert all(len(i.keys()) for i in product_raw), "HKTV Mall raw data each products' dictionary key not the same"
@@ -164,10 +153,10 @@ def concat_data_sets(df_discounted: pd.DataFrame, df_top100: pd.DataFrame) -> pd
     return df
 
 
-def get_product_comment(headers: dict, product_code: list, comment_url: str, page_size: str) -> pd.DataFrame:
+def get_product_comment(headers: dict, product_code: list, comment_url: str, page_size_list: list) -> pd.DataFrame:
     concatted__comment_raw = []
     for code in product_code:
-        url = comment_url.format(code, page_size)
+        url = comment_url.format(code, random.choice(page_size_list))
         comment_raw = requests.request("GET", url, headers=headers).json()['reviews']
         assert all(i.keys() for i in comment_raw)
         concatted__comment_raw.append(pd.DataFrame(comment_raw))

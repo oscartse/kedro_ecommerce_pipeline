@@ -1,19 +1,20 @@
-
 # Parameters for the example pipeline. Feel free to delete these once you
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
-example_test_data_ratio: 0.2
-example_num_train_iter: 10000
-example_learning_rate: 0.01
 
-hktv_mall_page_size: "10"
+# example_test_data_ratio: 0.2
+# example_num_train_iter: 10000
+# example_learning_rate: 0.01
+
 hktvmall_home_url: 'https://www.hktvmall.com/hktv/zh/supermarket'
 hktvmall_hotpicks_url: "https://www.hktvmall.com/hktv/zh/ajax/search_products?query=%22%22%3A%3Acategory%3A{}%3Acategory{}%3A{}&currentPage=0&pageType=searchResult&categoryCode={}"
 hktvmall_top100_url: 'https://www.hktvmall.com/hktv/zh/ajax/getTop100?code=supermarket&pageSize={}&currentPage=0'
+hktvmall_fullsite_subCat_url: "https://www.hktvmall.com/hktv/zh/ajax/search_products?query=%22%22%3Arelevance%3Acategory%3A{}%3Astreet%3Amain%3A&pageSize={}&pageType=searchResult&categoryCode={}"
 hktvmall_product_comment_url: "https://www.hktvmall.com/hktv/zh/ajax/get_pdp_product_reviews?productCode={}&currentPage=1&reviewType=all&pageSize={}"
 hktvmall_category_diction_url: 'https://www.hktvmall.com/hktv/zh/main/category-directory'
 
 hktvmall_catagory_code:
+  supermarket: BB01000001021
   babyproducts: BB01000026191
   beautynhealth: BB09000008021
   deals: BB08000010881
@@ -29,3 +30,9 @@ hktvmall_catagory_code:
 hktvmall_browse_method:
   discount: PromotionDifference
   hotpicks: HotPickOrder
+
+hktv_mall_page_size_list:
+  - 100
+  - 200
+  - 500
+  - 1000
