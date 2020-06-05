@@ -51,17 +51,33 @@
 #  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
 #  filepath: data/iris.png
 
+# MemoryDataSet
+hktvmall_header:
+  type: MemoryDataSet
+  layer: Preparation
+PromotionDifferenceURL_list:
+  type: MemoryDataSet
+  layer: Preparation
+HotPickOrderURL_list:
+  type: MemoryDataSet
+  layer: Preparation
+PromotionDifference_raw_df:
+  type: MemoryDataSet
+  layer: Raw
+HotPickOrder_raw_df:
+  type: MemoryDataSet
+  layer: Raw
+hktv_mall_category:
+  type: MemoryDataSet
+  layer: Raw
+
+
+# Real Saved DataSets
 PromotionDifference_raw:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/PromotionDifference_raw.csv
   layer: Raw
-
 HotPickOrder_raw:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/HotPickOrder_raw.csv
   layer: Raw
-
-hktv_mall_category:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/hktv_mall_category.csv
-  layer: Intermediate

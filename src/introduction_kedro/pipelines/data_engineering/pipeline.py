@@ -35,18 +35,19 @@ def create_pipeline(**kwargs):
         outputs="PromotionDifference_raw_df"
         )
     )
-    # turn PromotionDifference_raw_df to PromotionDifference_raw
-    pipe.append(node(
-        promotion_difference_raw_to_kedro_csvdataset,
-        inputs="PromotionDifference_raw_df",
-        outputs="PromotionDifference_raw"
-        )
-    )
     # get HotPickOrder_raw_df
     pipe.append(node(
         request_hktvmall_product_raw,
         inputs=["hktvmall_header", "HotPickOrderURL_list", "params:hktv_mall_page_size_list"],
         outputs="HotPickOrder_raw_df"
+        )
+    )
+
+    # turn PromotionDifference_raw_df to PromotionDifference_raw
+    pipe.append(node(
+        promotion_difference_raw_to_kedro_csvdataset,
+        inputs="PromotionDifference_raw_df",
+        outputs="PromotionDifference_raw"
         )
     )
     # turn HotPickOrder_raw_df to HotPickOrder_raw
