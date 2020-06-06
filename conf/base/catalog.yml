@@ -51,6 +51,7 @@
 #  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
 #  filepath: data/iris.png
 
+
 # MemoryDataSet
 hktvmall_header:
   type: MemoryDataSet
@@ -70,6 +71,9 @@ HotPickOrder_raw_df:
 hktv_mall_category:
   type: MemoryDataSet
   layer: Raw
+hktv_mall_category_extracted_df:
+  type: MemoryDataSet
+  layer: Intermediate
 
 
 # Real Saved DataSets
@@ -81,3 +85,18 @@ HotPickOrder_raw:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/HotPickOrder_raw.csv
   layer: Raw
+hktv_mall_category_extracted:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/hktv_mall_category_etl.csv
+  layer: Intermediate
+
+
+#iris_scatter_plot@matplotlib:
+#  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
+#  filepath: data/iris.png
+#iris_scatter_plot@bytes:
+#  type: introduction_kedro.io.byte_data_set.ByteDataSet
+#  filepath: data/iris.png
+#iris_scatter_plot_base64:
+#  type: introduction_kedro.io.base64_data_set.Base64DataSet
+#  filepath: data/iris64.txt

@@ -2,7 +2,8 @@ from kedro.pipeline import Pipeline, node
 
 from .nodes import request_hktvmall_product_raw, hktvmall_conn_node, \
     request_hktvmall_catagory_code, gen_hktvmall_product_link, \
-    promotion_difference_raw_to_kedro_csvdataset, hot_pick_order_raw_to_kedro_csvdataset
+    promotion_difference_raw_to_kedro_csvdataset, hot_pick_order_raw_to_kedro_csvdataset, \
+    categories_df_etl, categories_df_etl_to_kedro_csvdataset
 
 
 def create_pipeline(**kwargs):
@@ -19,6 +20,13 @@ def create_pipeline(**kwargs):
         request_hktvmall_catagory_code,
         inputs=["hktvmall_header", "params:hktvmall_category_diction_url"],
         outputs="hktv_mall_category",
+        )
+    )
+    # categories Extract
+    pipe.append(node(
+        categories_df_etl,
+        inputs="hktv_mall_category",
+        outputs="hktv_mall_category_extracted_df",
         )
     )
     # generate links
@@ -55,6 +63,13 @@ def create_pipeline(**kwargs):
         hot_pick_order_raw_to_kedro_csvdataset,
         inputs="HotPickOrder_raw_df",
         outputs="HotPickOrder_raw"
+        )
+    )
+    # turn hktv_mall_category_extracted to HotPickOrder_raw
+    pipe.append(node(
+        categories_df_etl_to_kedro_csvdataset,
+        inputs="hktv_mall_category_extracted_df",
+        outputs="hktv_mall_category_extracted"
         )
     )
 
