@@ -53,13 +53,7 @@
 
 
 # MemoryDataSet
-hktvmall_header:
-  type: MemoryDataSet
-  layer: Preparation
-PromotionDifferenceURL_list:
-  type: MemoryDataSet
-  layer: Preparation
-HotPickOrderURL_list:
+HktvmallHeader:
   type: MemoryDataSet
   layer: Preparation
 PromotionDifference_raw_df:
@@ -68,12 +62,23 @@ PromotionDifference_raw_df:
 HotPickOrder_raw_df:
   type: MemoryDataSet
   layer: Raw
-hktv_mall_category:
+Categories_raw:
   type: MemoryDataSet
   layer: Raw
-hktv_mall_category_extracted_df:
+CategoriesExtracted_df:
   type: MemoryDataSet
   layer: Intermediate
+
+
+# Pickle DataSet
+PromotionDifferenceURL_list:
+  type: pickle.PickleDataSet
+  filepath: data/promotiondiff.pkl
+  layer: Preparation
+HotPickOrderURL_list:
+  type: pickle.PickleDataSet
+  filepath: data/hotpickurl.pkl
+  layer: Preparation
 
 
 # Real Saved DataSets
@@ -85,10 +90,11 @@ HotPickOrder_raw:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/HotPickOrder_raw.csv
   layer: Raw
-hktv_mall_category_extracted:
+CategoriesExtracted:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/hktv_mall_category_etl.csv
   layer: Intermediate
+
 
 
 #iris_scatter_plot@matplotlib:
@@ -100,3 +106,4 @@ hktv_mall_category_extracted:
 #iris_scatter_plot_base64:
 #  type: introduction_kedro.io.base64_data_set.Base64DataSet
 #  filepath: data/iris64.txt
+

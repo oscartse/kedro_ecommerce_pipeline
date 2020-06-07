@@ -12,21 +12,21 @@ def create_pipeline(**kwargs):
     pipe.append(node(
         hktvmall_conn_node,
         inputs="params:hktvmall_home_url",
-        outputs="hktvmall_header",
+        outputs="HktvmallHeader",
         )
     )
     # categories
     pipe.append(node(
         request_hktvmall_catagory_code,
-        inputs=["hktvmall_header", "params:hktvmall_category_diction_url"],
-        outputs="hktv_mall_category",
+        inputs=["HktvmallHeader", "params:hktvmall_category_diction_url"],
+        outputs="Categories_raw",
         )
     )
     # categories Extract
     pipe.append(node(
         categories_df_etl,
-        inputs="hktv_mall_category",
-        outputs="hktv_mall_category_extracted_df",
+        inputs="Categories_raw",
+        outputs="CategoriesExtracted_df",
         )
     )
     # generate links
@@ -39,14 +39,14 @@ def create_pipeline(**kwargs):
     # get PromotionDifference_raw_df
     pipe.append(node(
         request_hktvmall_product_raw,
-        inputs=["hktvmall_header", "PromotionDifferenceURL_list", "params:hktv_mall_page_size_list"],
+        inputs=["HktvmallHeader", "PromotionDifferenceURL_list", "params:hktv_mall_page_size_list"],
         outputs="PromotionDifference_raw_df"
         )
     )
     # get HotPickOrder_raw_df
     pipe.append(node(
         request_hktvmall_product_raw,
-        inputs=["hktvmall_header", "HotPickOrderURL_list", "params:hktv_mall_page_size_list"],
+        inputs=["HktvmallHeader", "HotPickOrderURL_list", "params:hktv_mall_page_size_list"],
         outputs="HotPickOrder_raw_df"
         )
     )
@@ -68,8 +68,8 @@ def create_pipeline(**kwargs):
     # turn hktv_mall_category_extracted to HotPickOrder_raw
     pipe.append(node(
         categories_df_etl_to_kedro_csvdataset,
-        inputs="hktv_mall_category_extracted_df",
-        outputs="hktv_mall_category_extracted"
+        inputs="CategoriesExtracted_df",
+        outputs="CategoriesExtracted"
         )
     )
 
