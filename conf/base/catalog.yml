@@ -67,7 +67,7 @@ Categories_raw:
   layer: Raw
 CategoriesExtracted_df:
   type: MemoryDataSet
-  layer: Intermediate
+  layer: Raw
 
 
 # Pickle DataSet
@@ -84,16 +84,16 @@ HotPickOrderURL_list:
 # Real Saved DataSets
 PromotionDifference_raw:
   type: pandas.CSVDataSet
-  filepath: data/02_intermediate/PromotionDifference_raw.csv
+  filepath: data/01_raw/PromotionDifference_raw.csv
   layer: Raw
 HotPickOrder_raw:
   type: pandas.CSVDataSet
-  filepath: data/02_intermediate/HotPickOrder_raw.csv
+  filepath: data/01_raw/HotPickOrder_raw.csv
   layer: Raw
 CategoriesExtracted:
   type: pandas.CSVDataSet
-  filepath: data/02_intermediate/hktv_mall_category_etl.csv
-  layer: Intermediate
+  filepath: data/01_raw/hktv_mall_category_etl.csv
+  layer: Raw
 
 
 

@@ -7,9 +7,12 @@
 # example_learning_rate: 0.01
 
 hktvmall_home_url: 'https://www.hktvmall.com/hktv/zh/supermarket'
+
 hktvmall_hotpicks_url: "https://www.hktvmall.com/hktv/zh/ajax/search_products?query=%22%22%3A%3Acategory%3A{}%3Acategory{}%3A{}&currentPage=0&pageType=searchResult&categoryCode={}"
 hktvmall_top100_url: 'https://www.hktvmall.com/hktv/zh/ajax/getTop100?code=supermarket&pageSize={}&currentPage=0'
-hktvmall_fullsite_subCat_url: "https://www.hktvmall.com/hktv/zh/ajax/search_products?query=%22%22%3Arelevance%3Acategory%3A{}%3Astreet%3Amain%3A&pageSize={}&pageType=searchResult&categoryCode={}"
+
+hktvmall_cat_product_url: "https://www.hktvmall.com/hktv/zh/ajax/search_products?query=%22%22%3Arelevance%3Acategory%3A{}%3Astreet%3Amain%3A&pageSize={}&pageType=searchResult&categoryCode={}"
+
 hktvmall_product_comment_url: "https://www.hktvmall.com/hktv/zh/ajax/get_pdp_product_reviews?productCode={}&currentPage=1&reviewType=all&pageSize={}"
 hktvmall_category_diction_url: 'https://www.hktvmall.com/hktv/zh/main/category-directory'
 
