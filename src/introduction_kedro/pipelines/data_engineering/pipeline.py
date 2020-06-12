@@ -1,7 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
 from .nodes import request_hktvmall_product_raw, hktvmall_conn_node, \
-    request_hktvmall_catagory_code, gen_hktvmall_product_link, \
+    request_hktvmall_catagory_code, gen_hktvmall_product_by_types_and_cat_links, \
     promotion_difference_raw_to_kedro_csvdataset, hot_pick_order_raw_to_kedro_csvdataset, \
     categories_df_etl, categories_df_etl_to_kedro_csvdataset
 
@@ -35,7 +35,7 @@ def create_pipeline(**kwargs):
     # generate links
     pipe.append(
         node(
-            gen_hktvmall_product_link,
+            gen_hktvmall_product_by_types_and_cat_links,
             inputs=['params:hktvmall_catagory_code', 'params:hktvmall_browse_method', "params:hktvmall_hotpicks_url"],
             outputs=dict(method1="PromotionDifferenceURL_list", method2="HotPickOrderURL_list")
         )
