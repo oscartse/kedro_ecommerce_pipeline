@@ -92,7 +92,7 @@ HotPickOrder_raw:
   layer: Raw
 CategoriesExtracted:
   type: pandas.CSVDataSet
-  filepath: data/01_raw/hktv_mall_category_etl.csv
+  filepath: data/01_raw/Catelog_elt.csv
   layer: Raw
 
 
