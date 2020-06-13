@@ -1,9 +1,9 @@
 from kedro.pipeline import Pipeline, node
 
-from .nodes import hktvmall_conn_node, \
+from .nodes import hktvmall_conn_node, gen_hktvmall_full_site_links, \
     request_hktvmall_catagory_code, gen_hktvmall_product_by_method_and_cat_links, \
     promotion_difference_raw_to_kedro_csvdataset, hot_pick_order_raw_to_kedro_csvdataset, \
-    categories_df_etl, categories_df_etl_to_kedro_csvdataset, multi_threading_req
+    categories_df_etl, categories_df_etl_to_kedro_csvdataset, multi_threading_req, full_site_df_to_kedro_csvdataset
 
 
 def create_pipeline(**kwargs):
@@ -24,7 +24,7 @@ def create_pipeline(**kwargs):
             outputs="Categories_raw",
         )
     )
-    # categories Extract
+    # categories ETL
     pipe.append(
         node(
             categories_df_etl,
@@ -32,7 +32,7 @@ def create_pipeline(**kwargs):
             outputs="CategoriesExtracted_df",
         )
     )
-    # generate links
+    # generate links by method+category
     pipe.append(
         node(
             gen_hktvmall_product_by_method_and_cat_links,
@@ -40,7 +40,7 @@ def create_pipeline(**kwargs):
             outputs=dict(method1="PromotionDifferenceURL_list", method2="HotPickOrderURL_list")
         )
     )
-    # get PromotionDifference_raw_df
+    # get PromotionDifference_raw_df (method 1)
     pipe.append(
         node(
             multi_threading_req,
@@ -48,7 +48,7 @@ def create_pipeline(**kwargs):
             outputs="PromotionDifference_raw_df"
         )
     )
-    # get HotPickOrder_raw_df
+    # get HotPickOrder_raw_df (method 2)
     pipe.append(
         node(
             multi_threading_req,
@@ -56,6 +56,30 @@ def create_pipeline(**kwargs):
             outputs="HotPickOrder_raw_df"
         )
     )
+
+    # gen full site url
+    pipe.append(
+        node(
+            gen_hktvmall_full_site_links,
+            inputs=["CategoriesExtracted_df", 'params:hktvmall_cat_product_url'],
+            outputs="full_site_url"
+        )
+    )
+
+    # get FullSite_raw_df
+    pipe.append(
+        node(
+            multi_threading_req,
+            inputs=["HktvmallHeader", 'full_site_url'],
+            outputs="FullSite_raw_df"
+        )
+    )
+
+    ####################################################################################################################
+    ####################################################################################################################
+    ####################################################################################################################
+    ####################################################################################################################
+
     # turn PromotionDifference_raw_df to PromotionDifference_raw
     pipe.append(
         node(
@@ -77,7 +101,15 @@ def create_pipeline(**kwargs):
         node(
             categories_df_etl_to_kedro_csvdataset,
             inputs="CategoriesExtracted_df",
-            outputs="CategoriesExtracted"
+            outputs="Catelog_elt"
+        )
+    )
+    # turn PromotionDifference_raw_df to PromotionDifference_raw
+    pipe.append(
+        node(
+            full_site_df_to_kedro_csvdataset,
+            inputs="FullSite_raw_df",
+            outputs="FullSite_raw"
         )
     )
 

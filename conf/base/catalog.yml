@@ -52,22 +52,23 @@
 #  filepath: data/iris.png
 
 
-# MemoryDataSet
-HktvmallHeader:
-  type: MemoryDataSet
-  layer: Preparation
-PromotionDifference_raw_df:
-  type: MemoryDataSet
-  layer: Raw
-HotPickOrder_raw_df:
-  type: MemoryDataSet
-  layer: Raw
-Categories_raw:
-  type: MemoryDataSet
-  layer: Raw
-CategoriesExtracted_df:
-  type: MemoryDataSet
-  layer: Raw
+## MemoryDataSet
+## "kedro run --parallel" do not support memoryDataSet
+#HktvmallHeader:
+#  type: MemoryDataSet
+#  layer: Preparation
+#PromotionDifference_raw_df:
+#  type: MemoryDataSet
+#  layer: Raw
+#HotPickOrder_raw_df:
+#  type: MemoryDataSet
+#  layer: Raw
+#Categories_raw:
+#  type: MemoryDataSet
+#  layer: Raw
+#CategoriesExtracted_df:
+#  type: MemoryDataSet
+#  layer: Raw
 
 
 # Pickle DataSet
@@ -90,9 +91,13 @@ HotPickOrder_raw:
   type: pandas.CSVDataSet
   filepath: data/01_raw/HotPickOrder_raw.csv
   layer: Raw
-CategoriesExtracted:
+Catelog_elt:
   type: pandas.CSVDataSet
   filepath: data/01_raw/Catelog_elt.csv
+  layer: Raw
+FullSite_raw:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/FullSite_raw.csv
   layer: Raw
 
 
