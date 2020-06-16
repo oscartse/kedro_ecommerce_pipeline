@@ -1,7 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
 from .nodes import hktvmall_conn_node, gen_hktvmall_full_site_links, \
-    request_hktvmall_catagory_code, gen_hktvmall_product_by_method_and_cat_links, \
+    request_hktvmall_catagory_code, gen_hktvmall_product_by_method_and_cat_links, raw_etl, \
     promotion_difference_raw_to_kedro_csvdataset, hot_pick_order_raw_to_kedro_csvdataset, \
     categories_df_etl, categories_df_etl_to_kedro_csvdataset, multi_threading_req, full_site_df_to_kedro_csvdataset
 
@@ -37,26 +37,12 @@ def create_pipeline(**kwargs):
         node(
             gen_hktvmall_product_by_method_and_cat_links,
             inputs=['params:hktvmall_catagory_code', 'params:hktvmall_browse_method', "params:product_by_method_catcode_url"],
-            outputs=dict(method1="PromotionDifferenceURL_list", method2="HotPickOrderURL_list")
+            outputs=dict(
+                method1="PromotionDifferenceURL_list",
+                method2="HotPickOrderURL_list"
+            )
         )
     )
-    # get PromotionDifference_raw_df (method 1)
-    pipe.append(
-        node(
-            multi_threading_req,
-            inputs=["HktvmallHeader", "PromotionDifferenceURL_list"],
-            outputs="PromotionDifference_raw_df"
-        )
-    )
-    # get HotPickOrder_raw_df (method 2)
-    pipe.append(
-        node(
-            multi_threading_req,
-            inputs=["HktvmallHeader", "HotPickOrderURL_list"],
-            outputs="HotPickOrder_raw_df"
-        )
-    )
-
     # gen full site url
     pipe.append(
         node(
@@ -65,16 +51,52 @@ def create_pipeline(**kwargs):
             outputs="full_site_url"
         )
     )
-
+    # get PromotionDifference_raw_df (method 1)
+    pipe.append(
+        node(
+            multi_threading_req,
+            inputs=["HktvmallHeader", "PromotionDifferenceURL_list"],
+            outputs="PromotionDifference_raw_list"
+        )
+    )
+    # get HotPickOrder_raw_df (method 2)
+    pipe.append(
+        node(
+            multi_threading_req,
+            inputs=["HktvmallHeader", "HotPickOrderURL_list"],
+            outputs="HotPickOrder_raw_list"
+        )
+    )
     # get FullSite_raw_df
     pipe.append(
         node(
             multi_threading_req,
             inputs=["HktvmallHeader", 'full_site_url'],
+            outputs="FullSite_raw_list"
+        )
+    )
+    # filtering df necessary columns
+    pipe.append(
+        node(
+            raw_etl,
+            inputs="FullSite_raw_list",
             outputs="FullSite_raw_df"
         )
     )
-
+    pipe.append(
+        node(
+            raw_etl,
+            inputs="PromotionDifference_raw_list",
+            outputs="PromotionDifference_raw_df"
+        )
+    )
+    pipe.append(
+        node(
+            raw_etl,
+            inputs="HotPickOrder_raw_list",
+            outputs="HotPickOrder_raw_df"
+        )
+    )
     ####################################################################################################################
     ####################################################################################################################
     ####################################################################################################################

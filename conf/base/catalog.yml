@@ -74,11 +74,11 @@
 # Pickle DataSet
 PromotionDifferenceURL_list:
   type: pickle.PickleDataSet
-  filepath: data/promotiondiff.pkl
+  filepath: data/00_pickle/promotiondiff.pkl
   layer: Preparation
 HotPickOrderURL_list:
   type: pickle.PickleDataSet
-  filepath: data/hotpickurl.pkl
+  filepath: data/00_pickle/hotpickurl.pkl
   layer: Preparation
 
 
