@@ -21,12 +21,12 @@ def create_pipeline(**kwargs):
         node(
             request_hktvmall_catagory_code,
             inputs=["HktvmallHeader", "params:hktvmall_category_diction_url"],
-            outputs="Categories_raw",
+            outputs="category_raw_req",
         ),
         node(
             categories_df_etl,
-            inputs="Categories_raw",
-            outputs="CategoriesExtracted_df"
+            inputs="category_raw_req",
+            outputs="category_df"
         )
     ]
 
@@ -37,14 +37,14 @@ def create_pipeline(**kwargs):
             inputs=['params:hktvmall_catagory_code', 'params:hktvmall_browse_method',
                     "params:product_by_method_catcode_url"],
             outputs=dict(
-                method1="PromotionDifferenceURL_list",
-                method2="HotPickOrderURL_list"
+                method1="promotiondiff_url_list",
+                method2="hotpickorder_url_list"
             )
         ),
         node(
             gen_hktvmall_full_site_links,
-            inputs=["CategoriesExtracted_df", 'params:hktvmall_cat_product_url'],
-            outputs="full_site_url"
+            inputs=["category_df", 'params:hktvmall_cat_product_url'],
+            outputs="fullsite_url_list"
         )
     ]
 
@@ -52,18 +52,18 @@ def create_pipeline(**kwargs):
     req_raw_df = [
         node(
             multi_threading_req,
-            inputs=["HktvmallHeader", "PromotionDifferenceURL_list"],
-            outputs="PromotionDifference_raw_list"
+            inputs=["HktvmallHeader", "promotiondiff_url_list"],
+            outputs="promotiondiff_raw_list"
         ),
         node(
             multi_threading_req,
-            inputs=["HktvmallHeader", "HotPickOrderURL_list"],
-            outputs="HotPickOrder_raw_list"
+            inputs=["HktvmallHeader", "hotpickorder_url_list"],
+            outputs="hotpickorder_raw_list"
         ),
         node(
             multi_threading_req,
-            inputs=["HktvmallHeader", 'full_site_url'],
-            outputs="FullSite_raw_list"
+            inputs=["HktvmallHeader", 'fullsite_url_list'],
+            outputs="fullsite_raw_list"
         )
     ]
 
@@ -71,18 +71,18 @@ def create_pipeline(**kwargs):
     etl_on_df = [
         node(
             raw_etl,
-            inputs="FullSite_raw_list",
-            outputs="FullSite_raw_df"
+            inputs="fullsite_raw_list",
+            outputs="fullsite_raw_df"
         ),
         node(
             raw_etl,
-            inputs="PromotionDifference_raw_list",
-            outputs="PromotionDifference_raw_df"
+            inputs="promotiondiff_raw_list",
+            outputs="promotiondiff_raw_df"
         ),
         node(
             raw_etl,
-            inputs="HotPickOrder_raw_list",
-            outputs="HotPickOrder_raw_df"
+            inputs="hotpickorder_raw_list",
+            outputs="hotpickorder_raw_df"
         )
 
     ]
@@ -91,23 +91,23 @@ def create_pipeline(**kwargs):
     df_to_csv = [
         node(
             df_to_kedro_csvdataset,
-            inputs=["PromotionDifference_raw_df", "params:promotion_diff_path"],
-            outputs="PromotionDifference_raw"
+            inputs=["promotiondiff_raw_df", "params:promotiondiff_path"],
+            outputs="promotiondiff_raw"
         ),
         node(
             df_to_kedro_csvdataset,
-            inputs=["HotPickOrder_raw_df", "params:hotpick_path"],
-            outputs="HotPickOrder_raw"
+            inputs=["hotpickorder_raw_df", "params:hotpickorder_path"],
+            outputs="hotpickorder_raw"
         ),
         node(
             df_to_kedro_csvdataset,
-            inputs=["CategoriesExtracted_df", "params:catalog_path"],
-            outputs="Catelog_elt"
+            inputs=["category_df", "params:category_path"],
+            outputs="category_raw"
         ),
         node(
             df_to_kedro_csvdataset,
-            inputs=["FullSite_raw_df", "params:fullsite_path"],
-            outputs="FullSite_raw"
+            inputs=["fullsite_raw_df", "params:fullsite_path"],
+            outputs="fullsite_raw"
         )
     ]
 

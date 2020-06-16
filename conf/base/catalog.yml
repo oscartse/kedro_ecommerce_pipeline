@@ -52,55 +52,75 @@
 #  filepath: data/iris.png
 
 
-## MemoryDataSet
-## "kedro run --parallel" do not support memoryDataSet
+# "kedro run --parallel" do not support memoryDataSet
 
-#HktvmallHeader:
-#  type: MemoryDataSet
-#  layer: Preparation
-#PromotionDifference_raw_df:
-#  type: MemoryDataSet
-#  layer: Raw
-#HotPickOrder_raw_df:
-#  type: MemoryDataSet
-#  layer: Raw
-#Categories_raw:
-#  type: MemoryDataSet
-#  layer: Raw
-#CategoriesExtracted_df:
-#  type: MemoryDataSet
-#  layer: Raw
-
-
-# Pickle DataSet
-PromotionDifferenceURL_list:
-  type: pickle.PickleDataSet
-  filepath: data/00_pickle/promotiondiff.pkl
-  layer: Preparation
-HotPickOrderURL_list:
-  type: pickle.PickleDataSet
-  filepath: data/00_pickle/hotpickurl.pkl
+HktvmallHeader:
+  type: MemoryDataSet
   layer: Preparation
 
 
-# Real Saved DataSets
-PromotionDifference_raw:
+#Categories
+category_raw_req:
+  type: MemoryDataSet
+  layer: Preparation
+category_df:
+  type: MemoryDataSet
+  layer: Preparation
+category_raw:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/Categories_raw.csv
+  layer: Intermediate
+
+
+# PromotionDifference
+promotiondiff_url_list:
+  type: pickle.PickleDataSet
+  filepath: data/00_pickle/promotiondiff_url.pkl
+  layer: Preparation
+promotiondiff_raw_list:
+  type: MemoryDataSet
+  layer: Preparation
+promotiondiff_raw_df:
+  type: MemoryDataSet
+  layer: Raw
+promotiondiff_raw:
   type: pandas.CSVDataSet
   filepath: data/01_raw/PromotionDifference_raw.csv
+  layer: Intermediate
+
+
+#HotPickOrder
+hotpickorder_url_list:
+  type: pickle.PickleDataSet
+  filepath: data/00_pickle/hotpick_url.pkl
+  layer: Preparation
+hotpickorder_raw_list:
+  type: MemoryDataSet
+  layer: Preparation
+hotpickorder_raw_df:
+  type: MemoryDataSet
   layer: Raw
-HotPickOrder_raw:
+hotpickorder_raw:
   type: pandas.CSVDataSet
   filepath: data/01_raw/HotPickOrder_raw.csv
+  layer: Intermediate
+
+
+# FullSite
+fullsite_url_list:
+  type: pickle.PickleDataSet
+  filepath: data/00_pickle/fullsite_url.pkl
+  layer: Preparation
+fullsite_raw_list:
+  type: MemoryDataSet
+  layer: Preparation
+fullsite_raw_df:
+  type: MemoryDataSet
   layer: Raw
-Catelog_elt:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/Catelog_elt.csv
-  layer: Raw
-FullSite_raw:
+fullsite_raw:
   type: pandas.CSVDataSet
   filepath: data/01_raw/FullSite_raw.csv
-  layer: Raw
-
+  layer: Intermediate
 
 
 #iris_scatter_plot@matplotlib:
