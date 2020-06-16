@@ -38,3 +38,10 @@ hktv_mall_page_size_list:
   - 200
   - 500
   - 1000
+
+
+# file paths
+promotion_diff_path: data/01_raw/PromotionDifference_raw.csv
+hotpick_path: data/01_raw/HotPickOrder_raw.csv
+catalog_path: data/01_raw/Catelog_elt.csv
+fullsite_path: data/01_raw/FullSite_raw.csv
