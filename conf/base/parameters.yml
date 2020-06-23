@@ -6,7 +6,9 @@
 # example_num_train_iter: 10000
 # example_learning_rate: 0.01
 
-hktvmall_home_url: 'https://www.hktvmall.com/hktv/zh/supermarket'
+hktvmall_home_url: 'https://www.hktvmall.com/'
+
+hktvmall_promo_url: "https://www.hktvmall.com/hktv/zh/ajax/getPromoCat?zone={}&type=SKU&currentPromotionBoxIndex={}
 
 product_by_method_catcode_url: "https://www.hktvmall.com/hktv/zh/ajax/search_products?query=%22%22%3A%3Acategory%3A{}%3Acategory{}%3A{}&pageType=searchResult&categoryCode={}"
 
@@ -43,5 +45,5 @@ hktv_mall_page_size_list:
 # file paths
 promotiondiff_path: data/01_raw/PromotionDifference_raw.csv
 hotpickorder_path: data/01_raw/HotPickOrder_raw.csv
-category_path: data/01_raw/Catelog_elt.csv
+category_path: data/01_raw/Category_elt.csv
 fullsite_path: data/01_raw/FullSite_raw.csv

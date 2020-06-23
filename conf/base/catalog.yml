@@ -66,62 +66,66 @@ category_raw_req:
 category_df:
   type: MemoryDataSet
   layer: Preparation
-category_raw:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/Categories_raw.csv
-  layer: Intermediate
 
 
 # PromotionDifference
-promotiondiff_url_list:
-  type: pickle.PickleDataSet
-  filepath: data/00_pickle/promotiondiff_url.pkl
-  layer: Preparation
 promotiondiff_raw_list:
   type: MemoryDataSet
   layer: Preparation
 promotiondiff_raw_df:
   type: MemoryDataSet
   layer: Raw
-promotiondiff_raw:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/PromotionDifference_raw.csv
-  layer: Intermediate
 
 
 #HotPickOrder
-hotpickorder_url_list:
-  type: pickle.PickleDataSet
-  filepath: data/00_pickle/hotpick_url.pkl
-  layer: Preparation
 hotpickorder_raw_list:
   type: MemoryDataSet
   layer: Preparation
 hotpickorder_raw_df:
   type: MemoryDataSet
   layer: Raw
-hotpickorder_raw:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/HotPickOrder_raw.csv
-  layer: Intermediate
 
 
 # FullSite
-fullsite_url_list:
-  type: pickle.PickleDataSet
-  filepath: data/00_pickle/fullsite_url.pkl
-  layer: Preparation
 fullsite_raw_list:
   type: MemoryDataSet
   layer: Preparation
 fullsite_raw_df:
   type: MemoryDataSet
   layer: Raw
+
+
+# Real DFs
+category_raw:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/Category_elt.csv
+  layer: Intermediate
+promotiondiff_raw:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/PromotionDifference_raw.csv
+  layer: Intermediate
+hotpickorder_raw:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/HotPickOrder_raw.csv
+  layer: Intermediate
 fullsite_raw:
   type: pandas.CSVDataSet
   filepath: data/01_raw/FullSite_raw.csv
   layer: Intermediate
 
+#PickleDataSet
+promotiondiff_url_list:
+  type: pickle.PickleDataSet
+  filepath: data/00_pickle/promotiondiff_url.pkl
+  layer: Preparation
+hotpickorder_url_list:
+  type: pickle.PickleDataSet
+  filepath: data/00_pickle/hotpick_url.pkl
+  layer: Preparation
+fullsite_url_list:
+  type: pickle.PickleDataSet
+  filepath: data/00_pickle/fullsite_url.pkl
+  layer: Preparation
 
 #iris_scatter_plot@matplotlib:
 #  type: kedro.extras.datasets.matplotlib.MatplotlibWriter

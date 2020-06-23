@@ -35,9 +35,45 @@ Delete this when you start working on your own Kedro project.
 
 import logging
 from typing import Any, Dict
-
 import numpy as np
 import pandas as pd
+import requests
+
+
+def get_top_n_recipes(ingredient_list: list, num_of_recipes: int, is_ignore_pantry: bool) -> list:
+
+    url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients"
+
+    querystring = {
+        "number": f"{str(num_of_recipes)}",
+        "ranking": f"{len(ingredient_list)}",
+        "ignorePantry": f"{str(is_ignore_pantry).lower()}",
+        "ingredients": f"{'%2C'.join(ingredient_list)}"
+    }
+
+    headers = {
+        'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
+        'x-rapidapi-key': "9fe74729cfmsh1936060ef9386c6p1f5cc3jsn64f475a205b6"
+    }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+
+    return eval(response.text)
+
+
+def get_recipe_instructions(recipe_id: str) -> list:
+    url = f"https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/{recipe_id}/analyzedInstructions"
+
+    querystring = {"stepBreakdown": "false"}
+
+    headers = {
+        'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
+        'x-rapidapi-key': "9fe74729cfmsh1936060ef9386c6p1f5cc3jsn64f475a205b6"
+    }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+
+    return eval(response.text)
 
 
 def train_model(
